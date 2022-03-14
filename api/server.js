@@ -7,7 +7,7 @@ const cors = require("cors")
 const userRoute = require("./routes/users")
 const pinRoute = require("./routes/pins")
 
-const port = process.env.port || 8800
+const PORT = process.env.PORT || 8800
 
 // DB
 mongoose.connect(process.env.MONGO_URI)
@@ -21,5 +21,15 @@ app.use(cors())
 app.use("/api/users", userRoute)
 app.use("/api/pins", pinRoute)
 
+// Accessing the path module
+const path = require("path");
 
-app.listen(port, () => console.log(`Server is runnning on ${port}`))
+// Step 1:
+app.use(express.static(path.resolve(__dirname, "./client/build")));
+// Step 2:
+app.get("*", function (request, response) {
+  response.sendFile(path.resolve(__dirname, "./client/build", "index.html"));
+});
+
+
+app.listen(PORT, () => console.log(`Server is runnning on ${PORT}`))
